@@ -51,5 +51,4 @@ workflows:
     jobs:
       - say-hello
       - print-world
-          requires :
-            - print-help
+      - print-help
