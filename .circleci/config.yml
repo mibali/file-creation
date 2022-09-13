@@ -1,8 +1,19 @@
 version: 2.1
 orbs:
+  aws-cli: circleci/aws-cli@2.0.3
+
+commands:
+  # Exercise - Rollback
+  destroy_environment:
+    steps:
+      - run:
+          name: Destroy environment
+          # ${CIRCLE_WORKFLOW_ID} is a Built-in environment variable 
+          # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5}
 jobs:
-
-
   create_infrastructure: 
     docker:
       - image: amazon/aws-cli
@@ -16,8 +27,34 @@ jobs:
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
               --region us-east-1
 
+      - run: return 1
+      - destroy_environment
+
+      
+             
+  # Exercise: Smoke Testing
+smoke_test:
+  docker:
+    - image: alpine:latest
+  steps:
+    - run: apk add --update curl
+    - run:
+        name: smoke test
+        command: |
+          URL="https://blog.udacity.com/"
+          # Test if website exists
+          if curl -s --head ${URL}
+          then
+            return 0
+          else
+            return 1
+          fi
+    - destroy_environment
+
 workflows:
   myWorkflow:
     jobs:
 
       - create_infrastructure
+
+      
