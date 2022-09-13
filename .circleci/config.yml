@@ -1,35 +1,29 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-# Use a package of configuration called an orb.
 orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
-# Orchestrate or schedule a set of jobs
 jobs:
-  print_hello:
+  myjob1:
     docker:
-      - image: circleci/node:13.8.0
+      - image:
     steps:
-      - run: echo hello
-  print_world:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - run: echo world
+      - checkout
+      - run: echo "hello world"
 
-  print_name:
+  create_infrastructure: 
     docker:
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
-      - run: echo My_Name
+      - checkout
+      - run:
+          name: Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-east-1
+
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
+  myWorkflow:
     jobs:
-      - welcome/run
-      - print_hello
-      - print_world:
-          requires:
-            - print_hello
-      - print_name
+      - myjob1
+      - myjob2
+      - create_infrastructure
