@@ -1,12 +1,7 @@
 version: 2.1
 orbs:
 jobs:
-  myjob1:
-    docker:
-      - image:
-    steps:
-      - checkout
-      - run: echo "hello world"
+
 
   create_infrastructure: 
     docker:
@@ -24,6 +19,5 @@ jobs:
 workflows:
   myWorkflow:
     jobs:
-      - myjob1
-      - myjob2
+
       - create_infrastructure
