@@ -1241,7 +1241,7 @@ func TestSlackAppToken(t *testing.T) {
 }
 
 func TestSlackBotToken(t *testing.T) {
-	expected := "xoxb-2306408000000-2300127000000-GgLHgzqK3fXH5KA50AAbcdef"
+	expected := "xoxb-2306408000000-2300127000000-GgLHgzqK3fXH5KA50AAcdefghjk"
 
 	os.Clearenv()
 	os.Setenv("WAYBACK_SLACK_BOT_TOKEN", expected)
